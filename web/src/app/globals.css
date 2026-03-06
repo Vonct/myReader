@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-border: hsl(var(--border));
+  --color-ring: hsl(var(--ring));
+
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-serif: var(--font-serif), Georgia, serif;
+
+  --radius-xl: 12px;
+
+  --animate-apple-fade-in: apple-fade-in 0.6s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+  --animate-apple-scale-in: apple-scale-in 0.4s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
+
+  @keyframes apple-fade-in {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes apple-scale-in {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+}
+
+/* 
+  Define CSS variables in standard CSS.
+*/
+:root {
+  /* Core Colors - Apple SF Grayscale */
+  --background: 0 0% 100%;        /* Pure White */
+  --foreground: 0 0% 9%;          /* Dark Charcoal */
+  --muted: 0 0% 96%;              /* Ultra Light Gray */
+  --muted-foreground: 0 0% 45%;   /* Medium Gray */
+
+  /* Semantic Colors */
+  --accent: 211 100% 50%;         /* Apple Blue */
+  --accent-foreground: 0 0% 100%; /* White on Blue */
+  --border: 0 0% 91%;             /* Subtle Border */
+  --ring: 211 100% 50%;           /* Focus Ring */
+}
+
+.dark {
+  --background: 0 0% 8%;
+  --foreground: 0 0% 95%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 211 100% 65%;
+  --border: 0 0% 20%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer utilities {
+  /* Typography */
+  .text-apple-display {
+    font-size: clamp(2.25rem, 5vw, 5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+
+  .text-apple-headline {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .text-apple-title {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .text-apple-body {
+    font-size: clamp(0.875rem, 2vw, 1.125rem);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .text-apple-caption {
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    font-weight: 400;
+    line-height: 1.4;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  .glass:hover {
+    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 0.08);
+    transform: translateY(-0.5px);
+  }
+}
