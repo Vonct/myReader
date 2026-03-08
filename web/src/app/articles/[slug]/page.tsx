@@ -7,6 +7,15 @@ import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
+const basePath = '/myreader';
+
+function resolveImageSrc(src?: string) {
+  if (!src) return '';
+  if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) return src;
+  if (src.startsWith('/articles/') && !src.startsWith(`${basePath}/`)) return `${basePath}${src}`;
+  return src;
+}
+
 interface ArticlePageProps {
   params: Promise<{
     slug: string;
@@ -95,7 +104,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </header>
 
       <div className="font-serif text-[#2a2a2a] leading-loose">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            img: ({ src, alt }) => (
+              <img src={resolveImageSrc(src)} alt={alt ?? ''} className="rounded-xl w-full h-auto" loading="lazy" />
+            ),
+          }}
+        >
           {content}
         </ReactMarkdown>
       </div>

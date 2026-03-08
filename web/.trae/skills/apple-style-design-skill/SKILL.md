@@ -71,7 +71,16 @@ description: Apple-Class Design Style Guide. Use when designing UI/UX to ensure 
   letter-spacing: -0.02em;
 }
 
-.text-apple-title {
+.text-apple-title {import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  basePath: "/myreader",
+  experimental: {
+    allowedDevOrigins: ["localhost:3000", "*.loca.lt"],
+  },
+};
+
+export default nextConfig;
   font-size: clamp(1.125rem, 2.5vw, 1.5rem); /* 18px - 24px */
   font-weight: 600;
   line-height: 1.3;
