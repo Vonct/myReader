@@ -1,47 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { ArticleList, Article } from '@/components/ArticleList';
-
-async function getArticles(): Promise<Article[]> {
-  const articlesDirectory = path.join(process.cwd(), 'public/articles');
-  
-  if (!fs.existsSync(articlesDirectory)) {
-    fs.mkdirSync(articlesDirectory, { recursive: true });
-    return [];
-  }
-
-  const filenames = fs.readdirSync(articlesDirectory);
-
-  const articles = filenames
-    .filter((filename) => filename.endsWith('.md'))
-    .map((filename) => {
-      const filePath = path.join(articlesDirectory, filename);
-      const fileContents = fs.readFileSync(filePath, 'utf8');
-      const { data, content } = matter(fileContents);
-      
-      // Calculate reading time (approx 200 words per minute)
-      const words = content.trim().split(/\s+/).length;
-      const readingTime = Math.ceil(words / 200);
-      
-      return {
-        slug: filename.replace(/\.md$/, ''),
-        title: data.title || filename,
-        date: data.date || '',
-        category: data.category || 'Uncategorized',
-        summary: data.summary || '',
-        tags: data.tags || [],
-        readingTime,
-      };
-    })
-    // Sort by date descending
-    .sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
-
-  return articles;
-}
+import { ArticleList } from '@/components/ArticleList';
+import { getArticleSummaries } from '@/lib/articleVersions';
 
 export default async function Home() {
-  const articles = await getArticles();
+  const articles = getArticleSummaries();
 
   return (
     <div className="space-y-24">

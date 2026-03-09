@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getAllStoredArticlePaths } from '@/lib/articleVersions';
 
 export async function POST(request: Request) {
   try {
@@ -25,16 +26,19 @@ export async function POST(request: Request) {
     // Sanitize slug to prevent directory traversal
     // Allow standard slug characters
     const safeSlug = slug.replace(/[^a-zA-Z0-9-_]/g, ''); 
-    const articlesDirectory = path.join(process.cwd(), 'public/articles');
-    const filePath = path.join(articlesDirectory, `${safeSlug}.md`);
+    const articlePaths = getAllStoredArticlePaths(safeSlug);
+    const existingArticlePaths = articlePaths.filter((filePath) => fs.existsSync(filePath));
 
-    if (!fs.existsSync(filePath)) {
+    if (existingArticlePaths.length === 0) {
       return NextResponse.json({ error: 'Article not found' }, { status: 404 });
     }
 
-    fs.unlinkSync(filePath);
+    existingArticlePaths.forEach((filePath) => {
+      fs.unlinkSync(filePath);
+    });
 
     // Also try to delete the assets folder if it exists
+    const articlesDirectory = path.join(process.cwd(), 'public/articles');
     const assetsPath = path.join(articlesDirectory, 'assets', safeSlug);
     if (fs.existsSync(assetsPath)) {
         fs.rmSync(assetsPath, { recursive: true, force: true });
